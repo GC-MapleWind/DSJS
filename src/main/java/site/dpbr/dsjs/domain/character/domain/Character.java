@@ -1,4 +1,4 @@
-package site.dpbr.dsjs.domain.character;
+package site.dpbr.dsjs.domain.character.domain;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

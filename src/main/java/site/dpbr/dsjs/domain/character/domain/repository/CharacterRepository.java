@@ -1,7 +1,7 @@
-package site.dpbr.dsjs.domain.character.repository;
+package site.dpbr.dsjs.domain.character.domain.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import site.dpbr.dsjs.domain.character.Character;
+import site.dpbr.dsjs.domain.character.domain.Character;
 
 import java.util.UUID;
 
