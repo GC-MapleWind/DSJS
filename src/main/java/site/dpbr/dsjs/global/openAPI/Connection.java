@@ -1,12 +1,15 @@
 package site.dpbr.dsjs.global.openAPI;
 
+import org.springframework.beans.factory.annotation.Value;
+
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class Connection {
     // API KEY
-    private static final String API_KEY = "";
+    @Value("${API_KEY}")
+    private static String API_KEY;
     private static final String MAPLESTORY_NEXON_OPEN_API_URL = "https://open.api.nexon.com/maplestory/v1";
 
     // HTTP 요청
