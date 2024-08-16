@@ -35,11 +35,5 @@ public class Character {
     Integer stat;
 
     @Column(nullable = false)
-    Integer sixJobs;
-
-    @Column(nullable = false)
-    Integer genesisWeapons;
-
-    @Column(nullable = false)
     String gender;
 }
