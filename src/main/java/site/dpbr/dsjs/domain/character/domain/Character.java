@@ -12,28 +12,32 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Character {
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     UUID uuid;
 
     @Column(nullable = false)
+    String ocid;
+
+    @Column(nullable = false)
     String name;
 
-    @Column(nullable = false)
+    @Column
     String world;
 
-    @Column(nullable = false)
+    @Column
     String job;
 
-    @Column(nullable = false)
+    @Column
     Integer level;
 
-    @Column(nullable = false)
+    @Column
     Integer union;
 
-    @Column(nullable = false)
+    @Column
     Integer stat;
 
-    @Column(nullable = false)
+    @Column
     String gender;
 }
