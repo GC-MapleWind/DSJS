@@ -7,8 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
-@Entity
-@Builder
+@Entity(name = "characters")
 @AllArgsConstructor
 @NoArgsConstructor
 public class Character {
@@ -33,11 +32,24 @@ public class Character {
     Integer level;
 
     @Column
-    Integer union;
+    Integer unionLevel;
 
     @Column
     Integer stat;
 
     @Column
     String gender;
+
+    public static Character create(String ocid, String name) {
+        return Character.builder()
+                .ocid(ocid)
+                .name(name)
+                .build();
+    }
+
+    @Builder
+    public Character(String ocid, String name) {
+        this.ocid = ocid;
+        this.name = name;
+    }
 }
