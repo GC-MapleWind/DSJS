@@ -34,7 +34,7 @@ dependencies {
     implementation 'com.google.code.gson:gson'
 
     implementation 'org.apache.poi:poi'
-    implementation 'org.apache.poi:poi-ooxml'
+    implementation 'org.apache.poi:poi-ooxml:5.3.0'
 
     compileOnly 'org.projectlombok:lombok'
 
