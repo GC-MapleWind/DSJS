@@ -41,6 +41,8 @@ public class UploadCharacterList {
             // 엑셀 데이터 처리
             for (Row row : sheet) {
                 for (Cell cell : row) {
+
+                    // 초당 API 요청량을 초과하지 않기 위해 1초에 4번씩만 요청
                     if (cnt == 4) {
                         sleep(1000);
                         cnt = 0;
