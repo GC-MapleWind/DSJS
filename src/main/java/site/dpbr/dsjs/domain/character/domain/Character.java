@@ -39,7 +39,7 @@ public class Character {
     Integer unionLevel;
 
     @Column
-    Integer stat;
+    Long combatPower;
 
     @Column
     String gender;
