@@ -14,7 +14,7 @@ import java.nio.charset.StandardCharsets;
 @RequiredArgsConstructor
 public class FetchOcid {
     private final Connection connection;
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper;
 
     public String execute(String characterName) throws IOException {
         String path = "/id?character_name=" + URLEncoder.encode(characterName, StandardCharsets.UTF_8);
