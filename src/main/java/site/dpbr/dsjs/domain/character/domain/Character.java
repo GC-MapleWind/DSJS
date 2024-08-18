@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import site.dpbr.dsjs.domain.character.presentation.dto.response.CharacterBasicInfoResponse;
+import site.dpbr.dsjs.domain.character.presentation.dto.response.CharacterStatInfoResponse;
 import site.dpbr.dsjs.domain.character.presentation.dto.response.CharacterUnionInfoResponse;
 
 import java.util.UUID;
@@ -66,5 +67,13 @@ public class Character {
 
     public void updateUnionInfo(CharacterUnionInfoResponse response) {
         this.unionLevel = response.unionLevel();
+    }
+
+    public void updateStatInfo(CharacterStatInfoResponse response) {
+        this.combatPower = response.finalStats().stream()
+                .filter(stat -> stat.statName().equals("전투력"))
+                .map(stat -> Long.parseLong(stat.statValue()))
+                .findFirst()
+                .orElse(-1L);
     }
 }
