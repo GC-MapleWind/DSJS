@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import site.dpbr.dsjs.domain.character.domain.Character;
 import site.dpbr.dsjs.domain.character.domain.repository.CharacterRepository;
-import site.dpbr.dsjs.domain.character.presentation.dto.response.CharacterUnionInfoResponse;
+import site.dpbr.dsjs.domain.character.presentation.dto.response.CharacterStatInfoResponse;
 import site.dpbr.dsjs.global.openAPI.Connection;
 import site.dpbr.dsjs.global.success.SuccessCode;
 
@@ -14,7 +14,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class FetchUnionInfo {
+public class FetchStatInfoFromCharacterList {
 
     private final Connection connection;
     private final ObjectMapper objectMapper;
@@ -24,13 +24,13 @@ public class FetchUnionInfo {
         List<Character> characterList = characterRepository.findAll();
 
         for (Character character : characterList) {
-            String path = "/user/union?ocid=" + character.getOcid();
-            CharacterUnionInfoResponse response = objectMapper.readValue(connection.execute(path), CharacterUnionInfoResponse.class);
+            String path = "/character/stat?ocid=" + character.getOcid();
+            CharacterStatInfoResponse response = objectMapper.readValue(connection.execute(path), CharacterStatInfoResponse.class);
 
-            character.updateUnionInfo(response);
+            character.updateStatInfo(response);
             characterRepository.save(character);
         }
 
-        return SuccessCode.FETCH_UNION_INFO_SUCCESS.getMessage();
+        return SuccessCode.FETCH_STAT_INFO_SUCCESS.getMessage();
     }
 }

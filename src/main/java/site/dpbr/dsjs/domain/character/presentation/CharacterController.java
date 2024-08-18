@@ -22,9 +22,9 @@ public class CharacterController {
 
     private final FetchOcid fetchOcid;
     private final UploadCharacterList uploadCharacterList;
-    private final FetchBasicInfo fetchBasicInfo;
-    private final FetchUnionInfo fetchUnionInfo;
-    private final FetchStatInfo fetchStatInfo;
+    private final FetchBasicInfoFromCharacterList fetchBasicInfoFromCharacterList;
+    private final FetchUnionInfoFromCharacterList fetchUnionInfoFromCharacterList;
+    private final FetchStatInfoFromCharacterList fetchStatInfoFromCharacterList;
 
 
     @Operation(summary = "캐릭터 목록 엑셀 파일 업로드", description = "캐릭터 목록 엑셀 파일을 DB에 저장합니다.")
@@ -64,7 +64,7 @@ public class CharacterController {
     })
     @PatchMapping("/basic")
     public ResponseEntity<String> fetchBasicInfo() throws IOException {
-        return ResponseEntity.ok(fetchBasicInfo.execute());
+        return ResponseEntity.ok(fetchBasicInfoFromCharacterList.execute());
     }
 
     @Operation(summary = "캐릭터의 스텟 정보 호출", description = "Nexon Open API를 통해 캐릭터의 스텟 정보를 호출합니다.")
@@ -77,7 +77,7 @@ public class CharacterController {
     })
     @PatchMapping("/stat")
     public ResponseEntity<String> fetchStatInfo() throws IOException {
-        return ResponseEntity.ok(fetchStatInfo.execute());
+        return ResponseEntity.ok(fetchStatInfoFromCharacterList.execute());
     }
 
     @Operation(summary = "캐릭터의 유니온 정보 호출", description = "Nexon Open API를 통해 캐릭터의 유니온 정보를 호출합니다.")
@@ -90,6 +90,6 @@ public class CharacterController {
     })
     @PatchMapping("/union")
     public ResponseEntity<String> fetchUnionInfo() throws IOException {
-        return ResponseEntity.ok(fetchUnionInfo.execute());
+        return ResponseEntity.ok(fetchUnionInfoFromCharacterList.execute());
     }
 }
