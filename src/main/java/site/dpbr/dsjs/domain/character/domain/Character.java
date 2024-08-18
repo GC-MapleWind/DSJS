@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import site.dpbr.dsjs.domain.character.presentation.dto.response.CharacterBasicInfoResponse;
+import site.dpbr.dsjs.domain.character.presentation.dto.response.CharacterUnionInfoResponse;
 
 import java.util.UUID;
 
@@ -61,5 +62,9 @@ public class Character {
         this.job = response.characterClass();
         this.level = response.characterLevel();
         this.gender = response.characterGender();
+    }
+
+    public void updateUnionInfo(CharacterUnionInfoResponse response) {
+        this.unionLevel = response.unionLevel();
     }
 }
