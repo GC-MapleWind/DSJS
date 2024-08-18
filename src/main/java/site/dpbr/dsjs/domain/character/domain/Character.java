@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import site.dpbr.dsjs.domain.character.presentation.dto.response.CharacterBasicInfoResponse;
 
 import java.util.UUID;
 
@@ -53,5 +54,12 @@ public class Character {
     public Character(String ocid, String name) {
         this.ocid = ocid;
         this.name = name;
+    }
+
+    public void updateBasicInfo(CharacterBasicInfoResponse response) {
+        this.world = response.worldName();
+        this.job = response.characterClass();
+        this.level = response.characterLevel();
+        this.gender = response.characterGender();
     }
 }
