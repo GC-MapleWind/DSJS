@@ -14,7 +14,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class FetchCharacterBasicInfo {
+public class FetchBasicInfo {
 
     private final Connection connection;
     private final ObjectMapper objectMapper;
