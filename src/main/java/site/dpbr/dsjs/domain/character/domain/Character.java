@@ -70,6 +70,7 @@ public class Character {
 
     public void updateUnionInfo(CharacterUnionInfoResponse response) {
         this.unionLevel = response.unionLevel();
+        this.unionArtifactLevel = response.unionArtifactLevel();
     }
 
     public void updateStatInfo(CharacterStatInfoResponse response) {
