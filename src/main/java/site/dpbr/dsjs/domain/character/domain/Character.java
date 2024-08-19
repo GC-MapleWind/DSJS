@@ -40,6 +40,9 @@ public class Character {
     Integer unionLevel;
 
     @Column
+    Integer unionArtifactLevel;
+
+    @Column
     Long combatPower;
 
     @Column
