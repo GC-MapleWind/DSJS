@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:oracle:thin:@dsjs_high?TNS_ADMIN=./src/main/resources/OracleCloud
+    url: ${DB_URL}
     username: ${DB_USER}
     password: ${DB_PASSWORD}
     driver-class-name: oracle.jdbc.OracleDriver
