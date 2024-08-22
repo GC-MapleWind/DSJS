@@ -33,7 +33,7 @@ public class Character {
     @Column
     String job;
 
-    @Column
+    @Column(name = "character_level")
     Integer level;
 
     @Column
