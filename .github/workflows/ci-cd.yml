@@ -67,5 +67,9 @@ jobs:
             fi
             
             sudo docker rm $(sudo docker ps --filter 'status=exited' -a -q) 
-            sudo docker run -d --log-driver=syslog -p 8080:8080 ${{secrets.DOCKER_USERNAME}}/dsjs:latest
+            sudo docker run -d --log-driver=syslog -p 8080:8080 \
+            -e API_KEY=${{secrets.API_KEY}} \
+            -e DB_USER=${{secrets.DB_USER}} \
+            -e DB_PASSWORD=${{secrets.DB_PASSWORD}} \
+            ${{secrets.DOCKER_USERNAME}}/dsjs:latest
             sudo docker image prune -a -f
