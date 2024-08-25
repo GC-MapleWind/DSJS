@@ -6,6 +6,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,6 +24,7 @@ public class CharacterController {
 
     private final FetchOcid fetchOcid;
     private final UploadCharacterList uploadCharacterList;
+    private final ExportCharacterListToExcel exportCharacterListToExcel;
     private final FetchBasicInfoFromCharacterList fetchBasicInfoFromCharacterList;
     private final FetchUnionInfoFromCharacterList fetchUnionInfoFromCharacterList;
     private final FetchStatInfoFromCharacterList fetchStatInfoFromCharacterList;
@@ -52,6 +55,25 @@ public class CharacterController {
     @PostMapping("/upload")
     public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file) {
         return ResponseEntity.ok(uploadCharacterList.execute(file));
+    }
+
+    @Operation(summary = "캐릭터 정보 엑셀파일 추출", description = "DB에 저장된 캐릭터 목록을 엑셀 파일로 추출합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200"),
+            @ApiResponse(responseCode = "400", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "403", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "404", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "500", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    @GetMapping("/export")
+    public ResponseEntity<byte[]> exportCharacterListToExcel() throws IOException {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Disposition", "attachment; filename=단생조사.xlsx");
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .body(exportCharacterListToExcel.execute());
     }
 
     @Operation(summary = "캐릭터의 ocid 호출", description = "Nexon Open API를 통해 캐릭터의 ocid를 호출합니다.")
