@@ -74,7 +74,7 @@ jobs:
             fi
             
             sudo docker rm $(sudo docker ps --filter 'status=exited' -a -q) 
-            sudo docker run -d --log-driver=syslog -p 8080:8080 \
+            sudo docker run -d --log-driver=syslog -p 8080:8080 --network host \
             -e API_KEY=${{secrets.API_KEY}} \
             -e DB_USER=${{secrets.DB_USER}} \
             -e DB_PASSWORD=${{secrets.DB_PASSWORD}} \
