@@ -26,7 +26,20 @@ public class CharacterController {
     private final FetchUnionInfoFromCharacterList fetchUnionInfoFromCharacterList;
     private final FetchStatInfoFromCharacterList fetchStatInfoFromCharacterList;
     private final FetchMuLungInfoFromCharacterList fetchMuLungInfoFromCharacterList;
+    private final UploadAndFetchInfo uploadAndFetchInfo;
 
+    @Operation(summary = "캐릭터 목록 엑셀 파일 업로드 및 전체 정보 로드", description = "캐릭터 목록 엑셀 파일을 DB에 저장하고, Nexon Open API를 통해 필요한 모든 정보를 호출합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "201"),
+            @ApiResponse(responseCode = "400", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "403", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "404", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "500", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    @PostMapping("/uploadAndFetch")
+    public ResponseEntity<String> uploadFile(@RequestParam("date") String date, @RequestParam("file") MultipartFile file) {
+        return ResponseEntity.ok(uploadAndFetchInfo.execute(date, file));
+    }
 
     @Operation(summary = "캐릭터 목록 엑셀 파일 업로드", description = "캐릭터 목록 엑셀 파일을 DB에 저장합니다.")
     @ApiResponses({
