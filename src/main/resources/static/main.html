@@ -9,5 +9,15 @@
     <input type="file" name="file"/>
     <button type="submit">DB에 업로드</button>
 </form>
+
+<hr>
+
+<form method="POST" action="/character/uploadAndFetch" enctype="multipart/form-data">
+    <input type="file" name="file"/>
+    <label>
+        <input type="text" name="date" placeholder="날짜입력(YYYY-MM-DD)"/>
+    </label>
+    <button type="submit">DB에 업로드 후 조회</button>
+</form>
 </body>
 </html>
