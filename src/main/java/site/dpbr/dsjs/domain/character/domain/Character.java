@@ -73,8 +73,8 @@ public class Character {
     }
 
     public void updateUnionInfo(CharacterUnionInfoResponse response) {
-        this.unionLevel = response.unionLevel();
-        this.unionArtifactLevel = response.unionArtifactLevel();
+        this.unionLevel = (response.unionLevel() != null) ? response.unionLevel() : -1;
+        this.unionArtifactLevel = (response.unionArtifactLevel() != null) ? response.unionArtifactLevel() : -1;
     }
 
     public void updateStatInfo(CharacterStatInfoResponse response) {
@@ -86,6 +86,6 @@ public class Character {
     }
 
     public void updateMuLungInfo(CharacterMuLungInfoResponse response) {
-        this.muLungFloor = response.dojangBestFloor();
+        this.muLungFloor = (response.dojangBestFloor() != null) ? response.dojangBestFloor() : -1;
     }
 }
