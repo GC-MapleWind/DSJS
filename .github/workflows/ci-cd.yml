@@ -17,6 +17,11 @@ jobs:
           java-version: '17'
           distribution: 'corretto'
 
+      - name: Decode and Unzip OCI Wallet
+        run: |
+          echo "${{ secrets.OCI_WALLET }}" | base64 --decode > oci-wallet.zip
+          unzip oci-wallet.zip -d ./src/main/resources/OracleCloud
+
       - name: Grant permission for gradlew
         run: chmod +x ./gradlew
         shell: bash
