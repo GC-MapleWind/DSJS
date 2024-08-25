@@ -25,6 +25,7 @@ public class CharacterController {
     private final FetchBasicInfoFromCharacterList fetchBasicInfoFromCharacterList;
     private final FetchUnionInfoFromCharacterList fetchUnionInfoFromCharacterList;
     private final FetchStatInfoFromCharacterList fetchStatInfoFromCharacterList;
+    private final FetchMuLungInfoFromCharacterList fetchMuLungInfoFromCharacterList;
 
 
     @Operation(summary = "캐릭터 목록 엑셀 파일 업로드", description = "캐릭터 목록 엑셀 파일을 DB에 저장합니다.")
@@ -91,5 +92,18 @@ public class CharacterController {
     @PatchMapping("/union")
     public ResponseEntity<String> fetchUnionInfo() throws IOException {
         return ResponseEntity.ok(fetchUnionInfoFromCharacterList.execute());
+    }
+
+    @Operation(summary = "캐릭터의 무릉도장 정보 호출", description = "Nexon Open API를 통해 캐릭터의 무릉도장 정보를 호출합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200"),
+            @ApiResponse(responseCode = "400", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "403", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "404", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "500", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    @PatchMapping("/mulung")
+    public ResponseEntity<String> fetchMuLungInfo() throws IOException {
+        return ResponseEntity.ok(fetchMuLungInfoFromCharacterList.execute());
     }
 }
