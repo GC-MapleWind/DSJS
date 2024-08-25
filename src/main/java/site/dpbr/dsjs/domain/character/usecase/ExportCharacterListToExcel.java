@@ -6,9 +6,6 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import site.dpbr.dsjs.domain.character.domain.Character;
 import site.dpbr.dsjs.domain.character.domain.repository.CharacterRepository;
@@ -23,7 +20,7 @@ public class ExportCharacterListToExcel {
 
     private final CharacterRepository characterRepository;
 
-    public ResponseEntity<byte[]> execute() throws IOException {
+    public byte[] execute() throws IOException {
         List<Character> characters = characterRepository.findAll();
 
         // Excel Workbook 생성
@@ -58,15 +55,7 @@ public class ExportCharacterListToExcel {
         workbook.write(out);
         workbook.close();
 
-        // HTTP 응답 설정
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Content-Disposition", "attachment; filename=단생조사.xlsx");
-
         // 파일 데이터를 byte[]로 변환하여 반환
-        return ResponseEntity
-                .ok()
-                .headers(headers)
-                .contentType(MediaType.APPLICATION_OCTET_STREAM)
-                .body(out.toByteArray());
+        return out.toByteArray();
     }
 }
