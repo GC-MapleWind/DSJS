@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import site.dpbr.dsjs.domain.character.presentation.dto.response.CharacterBasicInfoResponse;
+import site.dpbr.dsjs.domain.character.presentation.dto.response.CharacterMuLungInfoResponse;
 import site.dpbr.dsjs.domain.character.presentation.dto.response.CharacterStatInfoResponse;
 import site.dpbr.dsjs.domain.character.presentation.dto.response.CharacterUnionInfoResponse;
 
@@ -82,5 +83,9 @@ public class Character {
                 .map(stat -> Long.parseLong(stat.statValue()))
                 .findFirst()
                 .orElse(-1L);
+    }
+
+    public void updateMuLungInfo(CharacterMuLungInfoResponse response) {
+        this.muLungFloor = response.dojangBestFloor();
     }
 }
