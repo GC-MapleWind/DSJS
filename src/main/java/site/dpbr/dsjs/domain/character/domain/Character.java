@@ -46,6 +46,9 @@ public class Character {
     Long combatPower;
 
     @Column
+    Integer muLungFloor;
+
+    @Column
     String gender;
 
     public static Character create(String ocid, String name) {
