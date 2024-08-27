@@ -48,6 +48,8 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
+        const progressMessage = document.getElementById("progressMessage");
+
         // 폼 제출 이벤트 리스너
         document.getElementById("uploadForm").addEventListener("submit", async function (event) {
             event.preventDefault(); // 폼의 기본 제출 동작 방지
@@ -62,6 +64,9 @@
                 alert("날짜 형식이 올바르지 않습니다.");
                 return;
             }
+
+            // 진행 중 메시지 표시
+            progressMessage.style.display = 'block';
 
             try {
                 const response = await fetch("/character/uploadAndFetch", {
@@ -79,11 +84,16 @@
                 }
             } catch (error) {
                 alert(error.message);
+            } finally {
+                // 진행 중 메시지 숨기기
+                progressMessage.style.display = 'none';
             }
         });
 
         // 버튼 클릭 이벤트 리스너
         document.getElementById('exportBtn').addEventListener('click', function () {
+            // 진행 중 메시지 표시
+            progressMessage.style.display = 'block';
 
             fetch('/character/export', {
                 method: 'GET',
@@ -106,6 +116,10 @@
                 })
                 .catch(error => {
                     alert(error.message);
+                })
+                .finally(() => {
+                    // 진행 중 메시지 숨기기
+                    progressMessage.style.display = 'none';
                 });
         });
     });
