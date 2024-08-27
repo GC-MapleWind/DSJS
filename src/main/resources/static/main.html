@@ -4,28 +4,14 @@
 <head>
     <title>단생조사</title>
 </head>
-<body>
-<form method="POST" action="/character/uploadAndFetch" enctype="multipart/form-data">
-    <input type="file" name="file"/>
-    <label>
-        <input type="text" name="date" placeholder="날짜입력(YYYY-MM-DD)"/>
-    </label>
-    <button type="submit">DB에 업로드 후 조회</button>
-</form>
 
-<hr>
-
-</body>
-    <!-- 버튼 -->
-    <button id="exportBtn">엑셀로 추출</button>
-
-    <script>
-        // 버튼 클릭 이벤트 리스너
-        document.getElementById('exportBtn').addEventListener('click', function() {
-            // API 호출
-            fetch('/character/export', {
-                method: 'GET',
-            })
+<script>
+    // 버튼 클릭 이벤트 리스너
+    document.getElementById('exportBtn').addEventListener('click', function () {
+        // API 호출
+        fetch('/character/export', {
+            method: 'GET',
+        })
             .then(response => {
                 // 응답이 성공적인지 확인
                 if (!response.ok) {
@@ -47,8 +33,20 @@
             .catch(error => {
                 console.error('There has been a problem with your fetch operation:', error);
             });
-        });
-    </script>
+    });
+</script>
 
-<body></body>
+<body>
+<form method="POST" action="/character/uploadAndFetch" enctype="multipart/form-data">
+    <input type="file" name="file"/>
+    <label>
+        <input type="text" name="date" placeholder="날짜입력(YYYY-MM-DD)"/>
+    </label>
+    <button type="submit">DB에 업로드</button>
+</form>
+
+<hr>
+
+<button id="exportBtn">엑셀로 추출</button>
+</body>
 </html>
