@@ -52,6 +52,9 @@ public class Character {
     @Column
     String gender;
 
+    @Column(length = 500)
+    String characterImage;
+
     public static Character create(String ocid, String name) {
         return Character.builder()
                 .ocid(ocid)
@@ -70,6 +73,7 @@ public class Character {
         this.job = response.characterClass();
         this.level = response.characterLevel();
         this.gender = response.characterGender();
+        this.characterImage = response.characterImage();
     }
 
     public void updateUnionInfo(CharacterUnionInfoResponse response) {
