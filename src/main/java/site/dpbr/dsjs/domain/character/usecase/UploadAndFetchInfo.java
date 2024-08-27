@@ -46,6 +46,11 @@ public class UploadAndFetchInfo {
             for (Row row : sheet) {
                 for (Cell cell : row) {
                     String characterName = cell.getStringCellValue();
+
+                    if(characterName.isEmpty()) {
+                        continue;
+                    }
+
                     String ocid = fetchOcid.execute(characterName);
 
                     String path = "/character/basic?ocid=" + ocid + "&date=" + date;
