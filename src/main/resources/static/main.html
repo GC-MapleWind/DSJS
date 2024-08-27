@@ -1,52 +1,114 @@
 <!DOCTYPE html>
-<meta charset="utf-8">
 <html lang="ko">
 <head>
+    <meta charset="UTF-8">
     <title>단생조사</title>
+    <style>
+        /* 점점점 애니메이션 */
+        @keyframes dots {
+            0% {
+                content: '';
+            }
+            25% {
+                content: '.';
+            }
+            50% {
+                content: '..';
+            }
+            75% {
+                content: '...';
+            }
+            100% {
+                content: '';
+            }
+        }
+
+        #progressMessage::after {
+            content: '';
+            animation: dots 1s steps(4, end) infinite;
+        }
+    </style>
 </head>
 
-<script>
-    // 버튼 클릭 이벤트 리스너
-    document.getElementById('exportBtn').addEventListener('click', function () {
-        // API 호출
-        fetch('/character/export', {
-            method: 'GET',
-        })
-            .then(response => {
-                // 응답이 성공적인지 확인
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.blob();  // 응답을 Blob으로 변환 (파일 데이터)
-            })
-            .then(blob => {
-                // Blob 데이터를 URL로 변환
-                const url = window.URL.createObjectURL(new Blob([blob]));
-                const a = document.createElement('a');
-                a.style.display = 'none';
-                a.href = url;
-                a.download = '단생조사.xlsx';  // 다운로드 파일 이름 설정
-                document.body.appendChild(a);
-                a.click();  // 파일 다운로드 실행
-                window.URL.revokeObjectURL(url);  // 메모리 해제
-            })
-            .catch(error => {
-                console.error('There has been a problem with your fetch operation:', error);
-            });
-    });
-</script>
-
 <body>
-<form method="POST" action="/character/uploadAndFetch" enctype="multipart/form-data">
+<form id="uploadForm" enctype="multipart/form-data">
     <input type="file" name="file"/>
     <label>
-        <input type="text" name="date" placeholder="날짜입력(YYYY-MM-DD)"/>
+        <input type="text" id="dateInput" name="date" placeholder="날짜입력(YYYY-MM-DD)"/>
     </label>
-    <button type="submit">DB에 업로드</button>
+    <button id="upload" type="submit">DB에 업로드</button>
 </form>
 
 <hr>
 
 <button id="exportBtn">엑셀로 추출</button>
+
+<!-- 진행 중 메시지 표시 영역 -->
+<p id="progressMessage" style="display: none;">진행 중</p>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // 폼 제출 이벤트 리스너
+        document.getElementById("uploadForm").addEventListener("submit", async function (event) {
+            event.preventDefault(); // 폼의 기본 제출 동작 방지
+
+            const form = event.target;
+            const formData = new FormData(form);
+            const dateInput = document.getElementById("dateInput").value;
+
+            // 날짜 형식 검사 (YYYY-MM-DD)
+            const datePattern = /^\d{4}-\d{2}-\d{2}$/;
+            if (!dateInput.match(datePattern)) {
+                alert("날짜 형식이 올바르지 않습니다.");
+                return;
+            }
+
+            try {
+                const response = await fetch("/character/uploadAndFetch", {
+                    method: "POST",
+                    body: formData
+                });
+
+                const contentType = response.headers.get("content-type");
+                if (contentType && contentType.includes("application/json")) {
+                    const result = await response.json();
+                    alert(result.message);
+                } else {
+                    const resultText = await response.text();
+                    alert(resultText);  // JSON이 아닌 경우 텍스트로 처리
+                }
+            } catch (error) {
+                alert(error.message);
+            }
+        });
+
+        // 버튼 클릭 이벤트 리스너
+        document.getElementById('exportBtn').addEventListener('click', function () {
+
+            fetch('/character/export', {
+                method: 'GET',
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        alert(response.statusText);
+                    }
+                    return response.blob();
+                })
+                .then(blob => {
+                    const url = window.URL.createObjectURL(new Blob([blob]));
+                    const a = document.createElement('a');
+                    a.style.display = 'none';
+                    a.href = url;
+                    a.download = '단생조사.xlsx';
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                })
+                .catch(error => {
+                    alert(error.message);
+                });
+        });
+    });
+</script>
 </body>
 </html>
