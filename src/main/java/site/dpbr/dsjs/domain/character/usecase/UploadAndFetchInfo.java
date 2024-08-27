@@ -24,8 +24,6 @@ import site.dpbr.dsjs.global.success.SuccessCode;
 import java.io.IOException;
 import java.io.InputStream;
 
-import static java.lang.Thread.sleep;
-
 @Service
 @RequiredArgsConstructor
 public class UploadAndFetchInfo {
@@ -43,8 +41,6 @@ public class UploadAndFetchInfo {
         try (InputStream inputStream = file.getInputStream()) {
             Workbook workbook = new XSSFWorkbook(inputStream);
             Sheet sheet = workbook.getSheetAt(0); // 첫 번째 시트를 가져옵니다.
-
-            int cnt = 0;
 
             // 엑셀 데이터 처리
             for (Row row : sheet) {
@@ -75,13 +71,11 @@ public class UploadAndFetchInfo {
                     character.updateMuLungInfo(characterMuLungInfoResponse);
 
                     characterRepository.save(character);
-
-                    sleep(1000);
                 }
             }
 
             workbook.close();
-        } catch (IOException | InterruptedException e) {
+        } catch (IOException e) {
             throw new ServiceException(ErrorCode.INTERNAL_SERVER_ERROR);
         }
 
