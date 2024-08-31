@@ -41,6 +41,50 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
+    // 캐릭터 다운로드 이벤트 리스너
+    document.getElementById("downloadImage").addEventListener("submit", async function (event) {
+        event.preventDefault();
+
+        const fileInput = document.getElementById("fileInput").files[0];
+        const progressMessage = document.getElementById("progressMessage"); // 진행 중 메시지 요소
+
+        if (!fileInput) {
+            alert("엑셀 파일을 선택해 주세요.");
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('file', fileInput);
+
+        progressMessage.style.display = 'block';
+
+        try {
+            const response = await fetch('/character/export-characters/image', {
+                method: 'POST',
+                body: formData
+            });
+
+            if (!response.ok) {
+                const errorText = await response.text(); // 서버에서 받은 오류 메시지를 읽어들입니다.
+                alert(`다운로드 실패: ${errorText}`);
+            } else {
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.href = url;
+                a.download = 'character_images.zip';
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+            }
+        } catch (error) {
+            alert("오류 발생: " + error.message);
+        } finally {
+            progressMessage.style.display = 'none';
+        }
+    });
+
     // 버튼 클릭 이벤트 리스너
     document.getElementById('exportBtn').addEventListener('click', function () {
         // 진행 중 메시지 표시
