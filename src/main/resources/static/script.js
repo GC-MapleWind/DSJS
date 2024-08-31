@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // 날짜 형식 검사 (YYYY-MM-DD)
         const datePattern = /^\d{4}-\d{2}-\d{2}$/;
-        if (!dateInput.match(datePattern)) {
+        if (dateInput !== "" && !dateInput.match(datePattern)) {
             alert("날짜 형식이 올바르지 않습니다.");
             return;
         }
