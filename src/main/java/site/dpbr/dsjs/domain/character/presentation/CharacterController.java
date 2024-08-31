@@ -25,6 +25,7 @@ public class CharacterController {
     private final FetchOcid fetchOcid;
     private final UploadAndFetchInfo uploadAndFetchInfo;
     private final ExportCharacterListToExcel exportCharacterListToExcel;
+    private final ExportCharacterImages exportCharacterImages;
     private final FetchBasicInfoFromCharacterList fetchBasicInfoFromCharacterList;
     private final FetchUnionInfoFromCharacterList fetchUnionInfoFromCharacterList;
     private final FetchStatInfoFromCharacterList fetchStatInfoFromCharacterList;
@@ -39,7 +40,7 @@ public class CharacterController {
             @ApiResponse(responseCode = "500", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
     @PostMapping("/uploadAndFetch")
-    public ResponseEntity<String> uploadFile(@RequestParam("date") String date, @RequestParam("file") MultipartFile file) {
+    public ResponseEntity<String> uploadFile(@RequestParam("date") String date, @RequestPart("file") MultipartFile file) {
         return ResponseEntity.ok(uploadAndFetchInfo.execute(date, file));
     }
 
@@ -51,7 +52,7 @@ public class CharacterController {
             @ApiResponse(responseCode = "404", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "500", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
-    @GetMapping("/export")
+    @GetMapping("/export-characters/excel")
     public ResponseEntity<byte[]> exportCharacterListToExcel() throws IOException {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Disposition", "attachment; filename=단생조사.xlsx");
@@ -60,6 +61,25 @@ public class CharacterController {
                 .headers(headers)
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .body(exportCharacterListToExcel.execute());
+    }
+
+    @Operation(summary = "캐릭터 이미지 파일 추출", description = "DB에 저장된 캐릭터 이미지를 압축하여 다운로드합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200"),
+            @ApiResponse(responseCode = "400", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "403", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "404", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "500", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    @PostMapping("/export-characters/image")
+    public ResponseEntity<byte[]> exportCharacterImages(@RequestPart("file") MultipartFile file) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=character_images.zip");
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .body(exportCharacterImages.execute(file));
     }
 
     @Operation(summary = "캐릭터의 ocid 호출", description = "Nexon Open API를 통해 캐릭터의 ocid를 호출합니다.")
