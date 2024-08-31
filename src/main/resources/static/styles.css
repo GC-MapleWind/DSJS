@@ -1,0 +1,23 @@
+/* 점점점 애니메이션 */
+@keyframes dots {
+    0% {
+        content: '';
+    }
+    25% {
+        content: '.';
+    }
+    50% {
+        content: '..';
+    }
+    75% {
+        content: '...';
+    }
+    100% {
+        content: '';
+    }
+}
+
+#progressMessage::after {
+    content: '';
+    animation: dots 1s steps(4, end) infinite;
+}
