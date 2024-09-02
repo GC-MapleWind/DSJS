@@ -36,10 +36,13 @@ dependencies {
     implementation 'com.fasterxml.jackson.core:jackson-databind'
     implementation 'com.google.code.gson:gson'
 
+    implementation 'io.jsonwebtoken:jjwt:0.12.5'
+
     implementation 'org.apache.poi:poi'
     implementation 'org.apache.poi:poi-ooxml:5.3.0'
 
     implementation 'org.hibernate.orm:hibernate-core:6.5.2.Final'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
 
     compileOnly 'org.projectlombok:lombok'
 
@@ -50,6 +53,7 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.security:spring-security-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
