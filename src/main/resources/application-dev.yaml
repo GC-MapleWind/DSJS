@@ -16,4 +16,7 @@ spring:
         jdbc:
           time_zone: Asia/Seoul
 
+jwt:
+  secret_key: ${JWT_SECRET_KEY}
+
 api-key: ${API_KEY}
