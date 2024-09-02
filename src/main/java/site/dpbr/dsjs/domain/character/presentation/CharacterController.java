@@ -39,7 +39,7 @@ public class CharacterController {
             @ApiResponse(responseCode = "404", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "500", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
-    @PostMapping("/uploadAndFetch")
+    @PostMapping(value = "/uploadAndFetch", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> uploadFile(@RequestParam("date") String date, @RequestPart("file") MultipartFile file) {
         return ResponseEntity.ok(uploadAndFetchInfo.execute(date, file));
     }
@@ -71,7 +71,7 @@ public class CharacterController {
             @ApiResponse(responseCode = "404", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "500", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
-    @PostMapping("/export-characters/image")
+    @PostMapping(value = "/export-characters/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<byte[]> exportCharacterImages(@RequestPart("file") MultipartFile file) {
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=character_images.zip");
