@@ -79,5 +79,6 @@ jobs:
             -e DB_USER=${{secrets.DB_USER}} \
             -e DB_PASSWORD=${{secrets.DB_PASSWORD}} \
             -e DB_URL=${{secrets.DB_URL}} \
+            -e JWT_SECRET_KEY=${{secrets.JWT_SECRET_KEY}} \
             ${{secrets.DOCKER_USERNAME}}/dsjs:latest
             sudo docker image prune -a -f
