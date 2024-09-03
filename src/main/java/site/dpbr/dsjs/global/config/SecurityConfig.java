@@ -58,7 +58,8 @@ public class SecurityConfig {
                                 .requestMatchers("/admin/test-register", "/admin/login").permitAll() //관리자 로그인
                                 .requestMatchers("admin/refresh").permitAll() // 토큰 재발급
 
-                                .requestMatchers("/character/**").hasAuthority(Role.ROLE_ADMIN.getRole()) // 캐릭터 관리
+                                .requestMatchers("/character/uploadAndFetch", "character/export-characters/**").hasAuthority(Role.ROLE_ADMIN.getRole()) // 캐릭터 정보 업로드 및 추출
+                                .requestMatchers("/character/search").permitAll() // 캐릭터 정보 검색
 
                                 .anyRequest().authenticated()
                 );

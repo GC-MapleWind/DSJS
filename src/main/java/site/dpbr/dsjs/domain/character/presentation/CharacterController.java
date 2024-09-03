@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import site.dpbr.dsjs.domain.character.presentation.dto.request.CharacterOcidRequest;
+import site.dpbr.dsjs.domain.character.presentation.dto.response.CharacterInfoResponse;
 import site.dpbr.dsjs.domain.character.usecase.*;
 import site.dpbr.dsjs.global.error.ErrorResponse;
 
@@ -26,6 +27,7 @@ public class CharacterController {
     private final UploadAndFetchInfo uploadAndFetchInfo;
     private final ExportCharacterListToExcel exportCharacterListToExcel;
     private final ExportCharacterImages exportCharacterImages;
+    private final SearchCharacterInfo searchCharacterInfo;
     private final FetchBasicInfoFromCharacterList fetchBasicInfoFromCharacterList;
     private final FetchUnionInfoFromCharacterList fetchUnionInfoFromCharacterList;
     private final FetchStatInfoFromCharacterList fetchStatInfoFromCharacterList;
@@ -80,6 +82,19 @@ public class CharacterController {
                 .headers(headers)
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .body(exportCharacterImages.execute(file));
+    }
+
+    @Operation(summary = "캐릭터 정보 호출", description = "DB에 저장된 캐릭터 정보를 검색하여 DB에서 불러옵니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200"),
+            @ApiResponse(responseCode = "400", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "403", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "404", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "500", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    @GetMapping(value = "/search")
+    public ResponseEntity<CharacterInfoResponse> searchCharacterInfo(@RequestParam String characterName) {
+        return ResponseEntity.ok(searchCharacterInfo.execute(characterName));
     }
 
     @Operation(summary = "캐릭터의 ocid 호출", description = "Nexon Open API를 통해 캐릭터의 ocid를 호출합니다.")
