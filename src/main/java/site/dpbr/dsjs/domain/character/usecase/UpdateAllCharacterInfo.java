@@ -18,7 +18,7 @@ public class UpdateAllCharacterInfo {
         characterRepository.findAll().forEach(character -> {
             try {
                 String ocid = character.getOcid();
-                character.updateInfo(fetchCharacterInfo.execute(ocid, null));
+                character.updateInfo(fetchCharacterInfo.execute(ocid));
             } catch (IOException e) {
                 throw new FailToUpdateCharacterInfoException();
             }

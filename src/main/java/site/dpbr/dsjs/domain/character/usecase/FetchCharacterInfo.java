@@ -25,6 +25,15 @@ public class FetchCharacterInfo {
         return CharacterInfoResponse.of(basicInfo, unionInfo, statInfo, muLungInfo);
     }
 
+    public CharacterInfoResponse execute(String ocid) throws IOException {
+        CharacterBasicInfoResponse basicInfo = fetchCharacterData("/character/basic?ocid=" + ocid, CharacterBasicInfoResponse.class);
+        CharacterStatInfoResponse statInfo = fetchCharacterData("/character/stat?ocid=" + ocid, CharacterStatInfoResponse.class);
+        CharacterUnionInfoResponse unionInfo = fetchCharacterData("/user/union?ocid=" + ocid, CharacterUnionInfoResponse.class);
+        CharacterMuLungInfoResponse muLungInfo = fetchCharacterData("/character/dojang?ocid=" + ocid, CharacterMuLungInfoResponse.class);
+
+        return CharacterInfoResponse.of(basicInfo, unionInfo, statInfo, muLungInfo);
+    }
+
     public <T> T fetchCharacterData(String path, Class<T> responseType) throws IOException {
         String response = connection.execute(path);
         return objectMapper.readValue(response, responseType);
