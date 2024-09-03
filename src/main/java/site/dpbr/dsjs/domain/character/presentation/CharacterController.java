@@ -69,14 +69,14 @@ public class CharacterController {
             @ApiResponse(responseCode = "500", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
     @PostMapping(value = "/export-characters/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<byte[]> exportCharacterImages(@RequestPart("file") MultipartFile file) {
+    public ResponseEntity<byte[]> exportCharacterImages(@RequestPart("file") MultipartFile file, String date) {
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=character_images.zip");
 
         return ResponseEntity.ok()
                 .headers(headers)
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
-                .body(exportCharacterImages.execute(file));
+                .body(exportCharacterImages.execute(file, date));
     }
 
     @Operation(summary = "캐릭터 정보 검색", description = "DB에 저장된 캐릭터 정보를 검색하여 DB에서 불러옵니다.")

@@ -11,6 +11,7 @@ import site.dpbr.dsjs.domain.character.domain.Character;
 import site.dpbr.dsjs.domain.character.domain.repository.CharacterRepository;
 import site.dpbr.dsjs.domain.character.exception.CharacterNotFoundException;
 import site.dpbr.dsjs.domain.character.exception.ImageDownloadFailException;
+import site.dpbr.dsjs.domain.character.presentation.dto.response.CharacterBasicInfoResponse;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -26,9 +27,10 @@ import java.util.zip.ZipOutputStream;
 @RequiredArgsConstructor
 public class ExportCharacterImages {
 
+    private final FetchCharacterInfo fetchCharacterInfo;
     private final CharacterRepository characterRepository;
 
-    public byte[] execute(MultipartFile file) {
+    public byte[] execute(MultipartFile file, String date) {
         try (InputStream inputStream = file.getInputStream()) {
 
             // Step 1: 이미지 데이터를 저장할 리스트 생성
@@ -48,7 +50,10 @@ public class ExportCharacterImages {
 
                 Character character = characterRepository.findByName(characterName)
                         .orElseThrow(CharacterNotFoundException::new);
-                String imageUrl = character.getCharacterImage();
+
+                CharacterBasicInfoResponse basicInfo = fetchCharacterInfo.fetchCharacterData("/character/basic?ocid=" + character.getOcid() + "&date=" + date, CharacterBasicInfoResponse.class);
+
+                String imageUrl = basicInfo.characterImage();
                 try (InputStream imageStream = downloadImage(imageUrl)) {
                     byte[] imageBytes = imageStream.readAllBytes();
                     images.add(new ImageData(characterName, name, imageBytes));
