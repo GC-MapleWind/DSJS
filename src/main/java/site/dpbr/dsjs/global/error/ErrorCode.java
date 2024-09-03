@@ -8,6 +8,7 @@ import lombok.Getter;
 public enum ErrorCode {
     EMPTY_FILE(400, "EMPTY_FILE", "빈 파일 입니다."),
     FAIL_TO_CONNECT_NEXON_OPEN_API(400, "FAILED_TO_CONNECT", "NEXON OPEN API에 연결을 실패했습니다."),
+    FAIL_TO_SAVE_CHARACTER(400, "FAIL_TO_SAVE_CHARACTER", "캐릭터 정보를 DB에 저장하는데 실패했습니다."),
     IMAGE_DOWNLOAD_FAIL(400, "IMAGE_DOWNLOAD_FAIL", "이미지 다운로드에 실패했습니다."),
     INVALID_TOKEN(401, "INVALID_TOKEN", "유효하지 않은 토큰입니다."),
     EXPIRED_TOKEN(403, "EXPIRED_TOKEN", "만료된 토큰입니다."),
