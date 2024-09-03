@@ -1,6 +1,5 @@
 package site.dpbr.dsjs.domain.character.usecase;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -12,75 +11,56 @@ import org.springframework.web.multipart.MultipartFile;
 import site.dpbr.dsjs.domain.character.domain.Character;
 import site.dpbr.dsjs.domain.character.domain.repository.CharacterRepository;
 import site.dpbr.dsjs.domain.character.exception.EmptyFileException;
-import site.dpbr.dsjs.domain.character.presentation.dto.response.CharacterBasicInfoResponse;
-import site.dpbr.dsjs.domain.character.presentation.dto.response.CharacterMuLungInfoResponse;
-import site.dpbr.dsjs.domain.character.presentation.dto.response.CharacterStatInfoResponse;
-import site.dpbr.dsjs.domain.character.presentation.dto.response.CharacterUnionInfoResponse;
-import site.dpbr.dsjs.global.error.ErrorCode;
-import site.dpbr.dsjs.global.error.exception.ServiceException;
-import site.dpbr.dsjs.global.openAPI.Connection;
+import site.dpbr.dsjs.domain.character.exception.FailToSaveCharacterException;
 import site.dpbr.dsjs.global.success.SuccessCode;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class UploadAndFetchInfo {
 
-    private final FetchOcid fetchOcid;
-    private final ObjectMapper objectMapper;
-    private final Connection connection;
     private final CharacterRepository characterRepository;
+    private final FetchCharacterInfo fetchCharacterInfo;
 
-    public String execute(String date, MultipartFile file) {
+    public String execute(String date, MultipartFile file) throws IOException {
         if (file.isEmpty()) {
             throw new EmptyFileException();
         }
 
-        try (InputStream inputStream = file.getInputStream()) {
-            Workbook workbook = new XSSFWorkbook(inputStream);
-            Sheet sheet = workbook.getSheetAt(0); // 첫 번째 시트를 가져옵니다.
+        List<String> characterNames = extractCharacterNamesFromExcel(file.getInputStream());
 
-            // 엑셀 데이터 처리
-            for (Row row : sheet) {
-                for (Cell cell : row) {
-                    String characterName = cell.getStringCellValue();
-
-                    if (characterName.isEmpty()) {
-                        continue;
+        characterNames.parallelStream()
+                .filter(characterName -> !characterName.isEmpty())
+                .forEach(characterName -> {
+                    try {
+                        Character character = fetchCharacterInfo.execute(characterName, date);
+                        synchronized (this) {
+                            characterRepository.save(character);
+                        }
+                    } catch (IOException e) {
+                        throw new FailToSaveCharacterException();
                     }
-
-                    String ocid = fetchOcid.execute(characterName);
-
-                    String path = "/character/basic?ocid=" + ocid + "&date=" + date;
-                    CharacterBasicInfoResponse characterBasicInfoResponse = objectMapper.readValue(connection.execute(path),
-                            CharacterBasicInfoResponse.class);
-
-                    path = "/character/stat?ocid=" + ocid + "&date=" + date;
-                    CharacterStatInfoResponse characterStatInfoResponse = objectMapper.readValue(connection.execute(path),
-                            CharacterStatInfoResponse.class);
-
-                    path = "/user/union?ocid=" + ocid + "&date=" + date;
-                    CharacterUnionInfoResponse characterUnionInfoResponse = objectMapper.readValue(connection.execute(path),
-                            CharacterUnionInfoResponse.class);
-
-                    path = "/character/dojang?ocid=" + ocid + "&date=" + date;
-                    CharacterMuLungInfoResponse characterMuLungInfoResponse = objectMapper.readValue(connection.execute(path),
-                            CharacterMuLungInfoResponse.class);
-
-                    Character character = Character.from(ocid, characterName, characterBasicInfoResponse, characterUnionInfoResponse,
-                            characterStatInfoResponse, characterMuLungInfoResponse);
-
-                    characterRepository.save(character);
-                }
-            }
-
-            workbook.close();
-        } catch (IOException e) {
-            throw new ServiceException(ErrorCode.INTERNAL_SERVER_ERROR);
-        }
+                });
 
         return SuccessCode.UPLOAD_AND_FETCH_SUCCESS.getMessage();
+    }
+
+    private List<String> extractCharacterNamesFromExcel(InputStream inputStream) throws IOException {
+        List<String> characterNames = new ArrayList<>();
+
+        Workbook workbook = new XSSFWorkbook(inputStream);
+        Sheet sheet = workbook.getSheetAt(0);
+
+        for (Row row : sheet) {
+            Cell cell = row.getCell(0);
+
+            if (cell != null) characterNames.add(cell.getStringCellValue());
+        }
+
+        return characterNames;
     }
 }
