@@ -84,6 +84,6 @@ public class UploadAndFetchInfo {
             throw new ServiceException(ErrorCode.INTERNAL_SERVER_ERROR);
         }
 
-        return SuccessCode.UPLOAD_FILE_SUCCESS.getMessage();
+        return SuccessCode.UPLOAD_AND_FETCH_SUCCESS.getMessage();
     }
 }
