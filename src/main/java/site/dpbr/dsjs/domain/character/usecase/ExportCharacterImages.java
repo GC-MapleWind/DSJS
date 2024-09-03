@@ -40,15 +40,11 @@ public class ExportCharacterImages {
             for (Row row : sheet) {
                 String name = row.getCell(0).getStringCellValue();
 
-                if (name.isEmpty()) {
-                    continue;
-                }
+                if (name.isEmpty()) continue;
 
                 String characterName = row.getCell(1).getStringCellValue();
 
-                if (characterName.isEmpty()) {
-                    continue;
-                }
+                if (characterName.isEmpty()) continue;
 
                 Character character = characterRepository.findByName(characterName)
                         .orElseThrow(CharacterNotFoundException::new);
@@ -56,8 +52,6 @@ public class ExportCharacterImages {
                 try (InputStream imageStream = downloadImage(imageUrl)) {
                     byte[] imageBytes = imageStream.readAllBytes();
                     images.add(new ImageData(characterName, name, imageBytes));
-                } catch (Exception e) {
-                    e.printStackTrace();
                 }
             }
 
@@ -65,7 +59,7 @@ public class ExportCharacterImages {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             try (ZipOutputStream zos = new ZipOutputStream(baos)) {
                 for (ImageData imageData : images) {
-                    ZipEntry zipEntry = new ZipEntry(imageData.id() + "_" +imageData.name() + ".png");
+                    ZipEntry zipEntry = new ZipEntry(imageData.id() + "_" + imageData.name() + ".png");
                     zos.putNextEntry(zipEntry);
                     zos.write(imageData.imageBytes());
                     zos.closeEntry();
@@ -79,14 +73,14 @@ public class ExportCharacterImages {
         }
     }
 
-    private InputStream downloadImage(String imageUrl) throws Exception {
+    private InputStream downloadImage(String imageUrl) throws IOException {
         URL url = new URL(imageUrl);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
         connection.setDoInput(true);
 
         if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
-            throw new RuntimeException("이미지 다운로드 실패: HTTP 오류 코드 " + connection.getResponseCode());
+            throw new ImageDownloadFailException();
         }
 
         return connection.getInputStream();
