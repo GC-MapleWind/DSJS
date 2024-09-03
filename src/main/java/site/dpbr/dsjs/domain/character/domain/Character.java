@@ -78,4 +78,13 @@ public class Character {
         this.muLungFloor = muLungFloor;
         this.characterImage = characterImage;
     }
+
+    public void updateInfo(CharacterInfoResponse characterInfoResponse) {
+        this.level = characterInfoResponse.level();
+        this.unionLevel = characterInfoResponse.unionLevel();
+        this.unionArtifactLevel = characterInfoResponse.unionArtifactLevel();
+        this.combatPower = characterInfoResponse.combatPower();
+        this.muLungFloor = characterInfoResponse.muLungFloor();
+        this.characterImage = characterInfoResponse.characterImage();
+    }
 }
