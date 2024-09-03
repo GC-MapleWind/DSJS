@@ -20,6 +20,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -38,27 +39,37 @@ public class ExportCharacterImages {
             Workbook workbook = new XSSFWorkbook(inputStream);
             Sheet sheet = workbook.getSheetAt(0); // 첫 번째 시트를 가져옵니다.
 
-            // Step 2: 이미지를 다운로드하여 리스트에 저장
+            // Step 2: 이미지 다운로드 작업을 병렬로 수행
+            ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+            List<Future<ImageData>> futures = new ArrayList<>();
+
             for (Row row : sheet) {
                 String name = row.getCell(0).getStringCellValue();
-
                 if (name.isEmpty()) continue;
 
                 String characterName = row.getCell(1).getStringCellValue();
-
                 if (characterName.isEmpty()) continue;
 
                 Character character = characterRepository.findByName(characterName)
                         .orElseThrow(CharacterNotFoundException::new);
 
-                CharacterBasicInfoResponse basicInfo = fetchCharacterInfo.fetchCharacterData("/character/basic?ocid=" + character.getOcid() + "&date=" + date, CharacterBasicInfoResponse.class);
+                String imageUrl = fetchCharacterInfo.fetchCharacterData("/character/basic?ocid=" + character.getOcid() + "&date=" + date, CharacterBasicInfoResponse.class).characterImage();
 
-                String imageUrl = basicInfo.characterImage();
-                try (InputStream imageStream = downloadImage(imageUrl)) {
-                    byte[] imageBytes = imageStream.readAllBytes();
-                    images.add(new ImageData(characterName, name, imageBytes));
-                }
+                Callable<ImageData> task = () -> {
+                    try (InputStream imageStream = downloadImage(imageUrl)) {
+                        byte[] imageBytes = imageStream.readAllBytes();
+                        return new ImageData(characterName, name, imageBytes);
+                    }
+                };
+
+                futures.add(executorService.submit(task));
             }
+
+            for (Future<ImageData> future : futures) {
+                images.add(future.get());
+            }
+
+            executorService.shutdown();
 
             // Step 3: ZIP 파일 생성 및 ByteArrayOutputStream에 기록
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -73,7 +84,7 @@ public class ExportCharacterImages {
 
             return baos.toByteArray();
 
-        } catch (IOException e) {
+        } catch (InterruptedException | ExecutionException | IOException e) {
             throw new ImageDownloadFailException();
         }
     }
