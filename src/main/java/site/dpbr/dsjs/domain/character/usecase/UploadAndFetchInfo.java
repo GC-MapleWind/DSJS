@@ -47,7 +47,7 @@ public class UploadAndFetchInfo {
                 for (Cell cell : row) {
                     String characterName = cell.getStringCellValue();
 
-                    if(characterName.isEmpty()) {
+                    if (characterName.isEmpty()) {
                         continue;
                     }
 
@@ -69,11 +69,8 @@ public class UploadAndFetchInfo {
                     CharacterMuLungInfoResponse characterMuLungInfoResponse = objectMapper.readValue(connection.execute(path),
                             CharacterMuLungInfoResponse.class);
 
-                    Character character = Character.create(ocid, characterName);
-                    character.updateBasicInfo(characterBasicInfoResponse);
-                    character.updateStatInfo(characterStatInfoResponse);
-                    character.updateUnionInfo(characterUnionInfoResponse);
-                    character.updateMuLungInfo(characterMuLungInfoResponse);
+                    Character character = Character.from(ocid, characterName, characterBasicInfoResponse, characterUnionInfoResponse,
+                            characterStatInfoResponse, characterMuLungInfoResponse);
 
                     characterRepository.save(character);
                 }

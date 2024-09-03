@@ -1,7 +1,8 @@
 package site.dpbr.dsjs.domain.character.domain;
 
-import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,86 +11,84 @@ import site.dpbr.dsjs.domain.character.presentation.dto.response.CharacterMuLung
 import site.dpbr.dsjs.domain.character.presentation.dto.response.CharacterStatInfoResponse;
 import site.dpbr.dsjs.domain.character.presentation.dto.response.CharacterUnionInfoResponse;
 
-import java.util.UUID;
+import java.util.Optional;
 
 @Getter
 @Entity(name = "characters")
-@AllArgsConstructor
 @NoArgsConstructor
 public class Character {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    UUID uuid;
-
     @Column(nullable = false)
     String ocid;
 
     @Column(nullable = false)
     String name;
 
-    @Column
-    String world;
-
-    @Column
-    String job;
-
-    @Column(name = "character_level")
-    Integer level;
-
-    @Column
-    Integer unionLevel;
-
-    @Column
-    Integer unionArtifactLevel;
-
-    @Column
-    Long combatPower;
-
-    @Column
-    Integer muLungFloor;
-
-    @Column
+    @Column(nullable = false)
     String gender;
 
-    @Column(length = 500)
+    @Column(nullable = false)
+    String world;
+
+    @Column(nullable = false)
+    String job;
+
+    @Column(name = "character_level", nullable = false)
+    Integer level;
+
+    @Column(nullable = false)
+    Integer unionLevel;
+
+    @Column(nullable = false)
+    Integer unionArtifactLevel;
+
+    @Column(nullable = false)
+    Long combatPower;
+
+    @Column(nullable = false)
+    Integer muLungFloor;
+
+    @Column(length = 500, nullable = false)
     String characterImage;
 
-    public static Character create(String ocid, String name) {
+    private static final int INVALID_INT_VALUE = -1;
+    private static final long INVALID_LONG_VALUE = -1L;
+
+    public static Character from(String ocid, String name, CharacterBasicInfoResponse characterBasicInfoResponse, CharacterUnionInfoResponse characterUnionInfoResponse,
+                                 CharacterStatInfoResponse characterStatInfoResponse, CharacterMuLungInfoResponse characterMuLungInfoResponse) {
         return Character.builder()
                 .ocid(ocid)
                 .name(name)
+                .gender(characterBasicInfoResponse.characterGender())
+                .world(characterBasicInfoResponse.worldName())
+                .job(characterBasicInfoResponse.characterClass())
+                .level(characterBasicInfoResponse.characterLevel())
+                .unionLevel(Optional.ofNullable(characterUnionInfoResponse.unionLevel()).orElse(INVALID_INT_VALUE))
+                .unionArtifactLevel(Optional.ofNullable(characterUnionInfoResponse.unionArtifactLevel()).orElse(INVALID_INT_VALUE))
+                .combatPower(characterStatInfoResponse.finalStats().stream()
+                        .filter(stat -> stat.statName().equals("전투력"))
+                        .map(stat -> Long.parseLong(stat.statValue()))
+                        .findFirst()
+                        .orElse(INVALID_LONG_VALUE))
+                .muLungFloor(Optional.ofNullable(characterMuLungInfoResponse.dojangBestFloor()).orElse(INVALID_INT_VALUE))
+                .characterImage(characterBasicInfoResponse.characterImage())
                 .build();
     }
 
     @Builder
-    public Character(String ocid, String name) {
+    public Character(String ocid, String name, String gender, String world, String job, Integer level, Integer unionLevel,
+                     Integer unionArtifactLevel, Long combatPower, Integer muLungFloor, String characterImage) {
         this.ocid = ocid;
         this.name = name;
-    }
-
-    public void updateBasicInfo(CharacterBasicInfoResponse response) {
-        this.world = response.worldName();
-        this.job = response.characterClass();
-        this.level = response.characterLevel();
-        this.gender = response.characterGender();
-        this.characterImage = response.characterImage();
-    }
-
-    public void updateUnionInfo(CharacterUnionInfoResponse response) {
-        this.unionLevel = (response.unionLevel() != null) ? response.unionLevel() : -1;
-        this.unionArtifactLevel = (response.unionArtifactLevel() != null) ? response.unionArtifactLevel() : -1;
-    }
-
-    public void updateStatInfo(CharacterStatInfoResponse response) {
-        this.combatPower = response.finalStats().stream()
-                .filter(stat -> stat.statName().equals("전투력"))
-                .map(stat -> Long.parseLong(stat.statValue()))
-                .findFirst()
-                .orElse(-1L);
-    }
-
-    public void updateMuLungInfo(CharacterMuLungInfoResponse response) {
-        this.muLungFloor = (response.dojangBestFloor() != null) ? response.dojangBestFloor() : -1;
+        this.gender = gender;
+        this.world = world;
+        this.job = job;
+        this.level = level;
+        this.unionLevel = unionLevel;
+        this.unionArtifactLevel = unionArtifactLevel;
+        this.combatPower = combatPower;
+        this.muLungFloor = muLungFloor;
+        this.characterImage = characterImage;
     }
 }
