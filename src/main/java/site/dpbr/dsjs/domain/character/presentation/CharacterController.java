@@ -11,7 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import site.dpbr.dsjs.domain.character.presentation.dto.response.CharacterInfoResponse;
+import site.dpbr.dsjs.domain.character.presentation.dto.response.SearchCharacterInfoResponse;
 import site.dpbr.dsjs.domain.character.usecase.*;
 import site.dpbr.dsjs.global.error.ErrorResponse;
 
@@ -78,7 +78,7 @@ public class CharacterController {
                 .body(exportCharacterImages.execute(file));
     }
 
-    @Operation(summary = "캐릭터 정보 호출", description = "DB에 저장된 캐릭터 정보를 검색하여 DB에서 불러옵니다.")
+    @Operation(summary = "캐릭터 정보 검색", description = "DB에 저장된 캐릭터 정보를 검색하여 DB에서 불러옵니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200"),
             @ApiResponse(responseCode = "400", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
@@ -87,7 +87,7 @@ public class CharacterController {
             @ApiResponse(responseCode = "500", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
     @GetMapping(value = "/search")
-    public ResponseEntity<CharacterInfoResponse> searchCharacterInfo(@RequestParam String characterName) {
+    public ResponseEntity<SearchCharacterInfoResponse> searchCharacterInfo(@RequestParam String characterName) {
         return ResponseEntity.ok(searchCharacterInfo.execute(characterName));
     }
 }

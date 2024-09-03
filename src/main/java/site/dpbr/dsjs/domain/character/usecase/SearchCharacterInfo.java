@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import site.dpbr.dsjs.domain.character.domain.Character;
 import site.dpbr.dsjs.domain.character.domain.repository.CharacterRepository;
 import site.dpbr.dsjs.domain.character.exception.CharacterNotFoundException;
-import site.dpbr.dsjs.domain.character.presentation.dto.response.CharacterInfoResponse;
+import site.dpbr.dsjs.domain.character.presentation.dto.response.SearchCharacterInfoResponse;
 
 import java.util.List;
 
@@ -14,7 +14,7 @@ import java.util.List;
 public class SearchCharacterInfo {
     private final CharacterRepository characterRepository;
 
-    public CharacterInfoResponse execute(String characterName) {
+    public SearchCharacterInfoResponse execute(String characterName) {
         Character character = characterRepository.findByName(characterName).orElseThrow(CharacterNotFoundException::new);
 
         List<Character> characters = characterRepository.findAllByOrderByCombatPowerDesc();
@@ -23,6 +23,6 @@ public class SearchCharacterInfo {
 
         double percentage = ranking * 100.0 / size;
 
-        return CharacterInfoResponse.from(character, percentage);
+        return SearchCharacterInfoResponse.from(character, percentage);
     }
 }
