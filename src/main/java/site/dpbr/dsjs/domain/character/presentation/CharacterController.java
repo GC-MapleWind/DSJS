@@ -36,7 +36,7 @@ public class CharacterController {
             @ApiResponse(responseCode = "500", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
     @PostMapping(value = "/uploadAndFetch", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<String> uploadFile(@RequestParam("date") String date, @RequestPart("file") MultipartFile file) {
+    public ResponseEntity<String> uploadFile(@RequestParam("date") String date, @RequestPart("file") MultipartFile file) throws IOException {
         return ResponseEntity.ok(uploadAndFetchInfo.execute(date, file));
     }
 
