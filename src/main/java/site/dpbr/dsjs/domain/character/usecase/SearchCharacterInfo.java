@@ -23,6 +23,6 @@ public class SearchCharacterInfo {
 
         double percentage = ranking * 100.0 / size;
 
-        return SearchCharacterInfoResponse.from(character, percentage);
+        return SearchCharacterInfoResponse.of(character, percentage);
     }
 }

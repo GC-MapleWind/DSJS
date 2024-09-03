@@ -15,7 +15,7 @@ public record SearchCharacterInfoResponse(
         String characterImage,
         Double percentage
 ) {
-    public static SearchCharacterInfoResponse from(Character character, Double percentage) {
+    public static SearchCharacterInfoResponse of(Character character, Double percentage) {
         return new SearchCharacterInfoResponse(
                 character.getName(),
                 character.getGender(),
