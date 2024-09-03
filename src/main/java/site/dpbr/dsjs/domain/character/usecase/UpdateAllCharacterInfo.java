@@ -15,14 +15,15 @@ public class UpdateAllCharacterInfo {
     private final FetchCharacterInfo fetchCharacterInfo;
 
     public String execute() {
-        characterRepository.findAll().forEach(character -> {
-            try {
-                String ocid = character.getOcid();
-                character.updateInfo(fetchCharacterInfo.execute(ocid));
-            } catch (IOException e) {
-                throw new FailToUpdateCharacterInfoException();
-            }
-        });
+        characterRepository.findAll().parallelStream()
+                .forEach(character -> {
+                    try {
+                        String ocid = character.getOcid();
+                        character.updateInfo(fetchCharacterInfo.execute(ocid));
+                    } catch (IOException e) {
+                        throw new FailToUpdateCharacterInfoException();
+                    }
+                });
 
         return SuccessCode.UPDATE_SUCCESS.getMessage();
     }
