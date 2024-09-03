@@ -12,6 +12,7 @@ import site.dpbr.dsjs.domain.character.domain.Character;
 import site.dpbr.dsjs.domain.character.domain.repository.CharacterRepository;
 import site.dpbr.dsjs.domain.character.exception.EmptyFileException;
 import site.dpbr.dsjs.domain.character.exception.FailToSaveCharacterException;
+import site.dpbr.dsjs.domain.character.presentation.dto.response.CharacterInfoResponse;
 import site.dpbr.dsjs.global.success.SuccessCode;
 
 import java.io.IOException;
@@ -25,6 +26,7 @@ public class UploadAndFetchInfo {
 
     private final CharacterRepository characterRepository;
     private final FetchCharacterInfo fetchCharacterInfo;
+    private final FetchOcid fetchOcid;
 
     public String execute(String date, MultipartFile file) throws IOException {
         if (file.isEmpty()) {
@@ -37,7 +39,9 @@ public class UploadAndFetchInfo {
                 .filter(characterName -> !characterName.isEmpty())
                 .forEach(characterName -> {
                     try {
-                        Character character = fetchCharacterInfo.execute(characterName, date);
+                        String ocid = fetchOcid.execute(characterName);
+                        CharacterInfoResponse characterInfoResponse = fetchCharacterInfo.execute(ocid, date);
+                        Character character = Character.create(ocid, characterName, characterInfoResponse);
                         synchronized (this) {
                             characterRepository.save(character);
                         }

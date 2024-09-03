@@ -6,12 +6,7 @@ import jakarta.persistence.Id;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import site.dpbr.dsjs.domain.character.presentation.dto.response.CharacterBasicInfoResponse;
-import site.dpbr.dsjs.domain.character.presentation.dto.response.CharacterMuLungInfoResponse;
-import site.dpbr.dsjs.domain.character.presentation.dto.response.CharacterStatInfoResponse;
-import site.dpbr.dsjs.domain.character.presentation.dto.response.CharacterUnionInfoResponse;
-
-import java.util.Optional;
+import site.dpbr.dsjs.domain.character.presentation.dto.response.CharacterInfoResponse;
 
 @Getter
 @Entity(name = "characters")
@@ -52,27 +47,19 @@ public class Character {
     @Column(length = 500, nullable = false)
     String characterImage;
 
-    private static final int INVALID_INT_VALUE = -1;
-    private static final long INVALID_LONG_VALUE = -1L;
-
-    public static Character from(String ocid, String name, CharacterBasicInfoResponse characterBasicInfoResponse, CharacterUnionInfoResponse characterUnionInfoResponse,
-                                 CharacterStatInfoResponse characterStatInfoResponse, CharacterMuLungInfoResponse characterMuLungInfoResponse) {
+    public static Character create(String ocid, String name, CharacterInfoResponse characterInfoResponse) {
         return Character.builder()
                 .ocid(ocid)
                 .name(name)
-                .gender(characterBasicInfoResponse.characterGender())
-                .world(characterBasicInfoResponse.worldName())
-                .job(characterBasicInfoResponse.characterClass())
-                .level(characterBasicInfoResponse.characterLevel())
-                .unionLevel(Optional.ofNullable(characterUnionInfoResponse.unionLevel()).orElse(INVALID_INT_VALUE))
-                .unionArtifactLevel(Optional.ofNullable(characterUnionInfoResponse.unionArtifactLevel()).orElse(INVALID_INT_VALUE))
-                .combatPower(characterStatInfoResponse.finalStats().stream()
-                        .filter(stat -> stat.statName().equals("전투력"))
-                        .map(stat -> Long.parseLong(stat.statValue()))
-                        .findFirst()
-                        .orElse(INVALID_LONG_VALUE))
-                .muLungFloor(Optional.ofNullable(characterMuLungInfoResponse.dojangBestFloor()).orElse(INVALID_INT_VALUE))
-                .characterImage(characterBasicInfoResponse.characterImage())
+                .gender(characterInfoResponse.gender())
+                .world(characterInfoResponse.world())
+                .job(characterInfoResponse.job())
+                .level(characterInfoResponse.level())
+                .unionLevel(characterInfoResponse.unionLevel())
+                .unionArtifactLevel(characterInfoResponse.unionArtifactLevel())
+                .combatPower(characterInfoResponse.combatPower())
+                .muLungFloor(characterInfoResponse.muLungFloor())
+                .characterImage(characterInfoResponse.characterImage())
                 .build();
     }
 
