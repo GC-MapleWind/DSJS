@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import site.dpbr.dsjs.domain.admin.domain.Admin;
 import site.dpbr.dsjs.domain.admin.domain.repository.AdminRepository;
 import site.dpbr.dsjs.domain.admin.exception.AdminNotFoundException;
-import site.dpbr.dsjs.domain.admin.presentation.dto.dto.response.AdminLoginResponse;
+import site.dpbr.dsjs.domain.admin.presentation.dto.response.AdminLoginResponse;
 import site.dpbr.dsjs.domain.shared.Role;
 import site.dpbr.dsjs.domain.shared.exception.PasswordNotMatchException;
 import site.dpbr.dsjs.global.jwt.JwtProvider;
