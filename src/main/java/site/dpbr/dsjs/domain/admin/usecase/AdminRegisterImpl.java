@@ -5,6 +5,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import site.dpbr.dsjs.domain.admin.domain.Admin;
 import site.dpbr.dsjs.domain.admin.domain.repository.AdminRepository;
+import site.dpbr.dsjs.domain.admin.exception.AdminDeduplicateException;
 import site.dpbr.dsjs.domain.shared.Role;
 import site.dpbr.dsjs.domain.shared.dto.response.RegisterResponse;
 import site.dpbr.dsjs.global.jwt.JwtProvider;
@@ -21,6 +22,8 @@ public class AdminRegisterImpl implements AdminRegister {
 
     @Override
     public RegisterResponse execute(String username, String password) {
+        if(adminRepository.existsByUsername(username)) throw new AdminDeduplicateException();
+
         Admin admin = Admin.create(username, passwordEncoder.encode(password));
         adminRepository.save(admin);
         generateRefreshToken(admin);
