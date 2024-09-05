@@ -6,6 +6,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum ErrorCode {
+    ADMIN_DUPLICATE(400, "ADMIN_DUPLICATE", "이미 존재하는 관리자입니다."),
     EMPTY_FILE(400, "EMPTY_FILE", "빈 파일 입니다."),
     FAIL_TO_CONNECT_NEXON_OPEN_API(400, "FAILED_TO_CONNECT", "NEXON OPEN API에 연결을 실패했습니다."),
     FAIL_TO_UPDATE_CHARACTER_INFO(400, "FAIL_TO_UPDATE_CHARACTER_INFO", "캐릭터 정보를 업데이트하는데 실패했습니다."),
