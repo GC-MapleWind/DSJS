@@ -18,7 +18,7 @@ import site.dpbr.dsjs.global.error.ErrorResponse;
 import java.io.IOException;
 
 @RestController
-@RequestMapping("/character")
+@RequestMapping("v1/character")
 @RequiredArgsConstructor
 public class CharacterController {
 

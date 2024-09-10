@@ -24,7 +24,7 @@ import site.dpbr.dsjs.global.jwt.dto.JwtResponse;
 
 
 @RestController
-@RequestMapping("/admin")
+@RequestMapping("v1/admin")
 @RequiredArgsConstructor
 public class AdminController {
     private final AdminRegister adminRegister;
