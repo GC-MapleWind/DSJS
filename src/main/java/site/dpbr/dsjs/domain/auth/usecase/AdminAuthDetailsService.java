@@ -8,7 +8,6 @@ import site.dpbr.dsjs.domain.admin.domain.Admin;
 import site.dpbr.dsjs.domain.admin.domain.repository.AdminRepository;
 import site.dpbr.dsjs.domain.admin.exception.AdminNotFoundException;
 import site.dpbr.dsjs.domain.auth.domain.AuthDetails;
-import site.dpbr.dsjs.domain.shared.Role;
 
 
 @Service
@@ -20,6 +19,6 @@ public class AdminAuthDetailsService implements UserDetailsService {
     public AuthDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Admin admin = adminRepository.findByUsername(username)
                 .orElseThrow(AdminNotFoundException::new);
-        return new AuthDetails(admin.getAdminId(), admin.getUsername(), Role.ROLE_ADMIN);
+        return new AuthDetails(admin.getAdminId(), admin.getUsername(), admin.getRole());
     }
 }

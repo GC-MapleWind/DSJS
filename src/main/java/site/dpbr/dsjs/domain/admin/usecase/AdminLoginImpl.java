@@ -7,7 +7,6 @@ import site.dpbr.dsjs.domain.admin.domain.Admin;
 import site.dpbr.dsjs.domain.admin.domain.repository.AdminRepository;
 import site.dpbr.dsjs.domain.admin.exception.AdminNotFoundException;
 import site.dpbr.dsjs.domain.admin.presentation.dto.response.AdminLoginResponse;
-import site.dpbr.dsjs.domain.shared.Role;
 import site.dpbr.dsjs.domain.shared.exception.PasswordNotMatchException;
 import site.dpbr.dsjs.global.jwt.JwtProvider;
 import site.dpbr.dsjs.global.jwt.exception.ExpiredTokenException;
@@ -26,7 +25,7 @@ public class AdminLoginImpl implements AdminLogin {
         Admin admin = adminRepository.findByUsername(username).orElseThrow(AdminNotFoundException::new);
         validatePassword(password, admin);
 
-        String accessToken = tokenProvider.generateAccessToken(admin.getAdminId(), admin.getUsername(), Role.ROLE_ADMIN);
+        String accessToken = tokenProvider.generateAccessToken(admin.getAdminId(), admin.getUsername(), admin.getRole());
         String refreshToken = generateRefreshToken(admin);
 
         return new AdminLoginResponse(accessToken, refreshToken);
@@ -41,7 +40,7 @@ public class AdminLoginImpl implements AdminLogin {
     private String generateRefreshToken(Admin admin) {
         String refreshToken = admin.getRefreshToken();
         if (refreshToken == null || !isValidToken(refreshToken)) {
-            refreshToken = tokenProvider.generateRefreshToken(admin.getAdminId(), admin.getUsername(), Role.ROLE_ADMIN);
+            refreshToken = tokenProvider.generateRefreshToken(admin.getAdminId(), admin.getUsername(), admin.getRole());
             updateAdminRefreshToken(admin, refreshToken);
         }
         return refreshToken;
