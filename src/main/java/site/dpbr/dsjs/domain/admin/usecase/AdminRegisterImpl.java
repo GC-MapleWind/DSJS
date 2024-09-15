@@ -21,20 +21,20 @@ public class AdminRegisterImpl implements AdminRegister {
     private final JwtProvider jwtProvider;
 
     @Override
-    public RegisterResponse execute(String username, String password) {
+    public RegisterResponse execute(String username, String password, Role role) {
         if(adminRepository.existsByUsername(username)) throw new AdminDeduplicateException();
 
-        Admin admin = Admin.create(username, passwordEncoder.encode(password));
+        Admin admin = Admin.create(username, passwordEncoder.encode(password), role);
         adminRepository.save(admin);
-        generateRefreshToken(admin);
+        generateRefreshToken(admin, role);
 
         return new RegisterResponse(true, "관리자 가입 성공");
     }
 
-    public void generateRefreshToken(Admin admin) {
+    public void generateRefreshToken(Admin admin, Role role) {
         String refreshToken = admin.getRefreshToken();
         if (refreshToken == null || !isValidToken(refreshToken)) {
-            refreshToken = jwtProvider.generateRefreshToken(admin.getAdminId(), admin.getUsername(), Role.ROLE_ADMIN);
+            refreshToken = jwtProvider.generateRefreshToken(admin.getAdminId(), admin.getUsername(), role);
             updateRefreshToken(admin, refreshToken);
         }
     }

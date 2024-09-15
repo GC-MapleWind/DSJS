@@ -31,7 +31,7 @@ public class AdminController {
     private final AdminLogin adminLogin;
     private final JwtProvider jwtProvider;
 
-    @Operation(summary = "관리자 테스트 회원가입", description = "테스트를 위한 관리자 회원가입 기능입니다.")
+    @Operation(summary = "관리자 회원가입", description = "관리자 회원가입 기능입니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "201"),
             @ApiResponse(responseCode = "400", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
@@ -39,9 +39,9 @@ public class AdminController {
             @ApiResponse(responseCode = "404", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "500", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
-    @PostMapping("/test-register")
+    @PostMapping("/register")
     public ResponseEntity<RegisterResponse> register(@RequestBody AdminRegisterRequest request) {
-        return ResponseEntity.ok(adminRegister.execute(request.username(), request.password()));
+        return ResponseEntity.ok(adminRegister.execute(request.username(), request.password(), request.role()));
     }
 
     @Operation(summary = "관리자 로그인", description = "관리자 계정으로 로그인합니다.")
