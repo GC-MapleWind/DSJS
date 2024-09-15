@@ -55,10 +55,11 @@ public class SecurityConfig {
                         authorize
                                 .requestMatchers("/v3/api-docs/**", "/swagger-ui/**").permitAll() // API 명세서
 
-                                .requestMatchers("v1/admin/test-register", "v1/admin/login").permitAll() //관리자 로그인
+                                .requestMatchers("v1/admin/test-register", "v1/admin/register","v1/admin/login").permitAll() //관리자 로그인
                                 .requestMatchers("v1/admin/refresh").permitAll() // 토큰 재발급
 
-                                .requestMatchers("v1/character/uploadAndFetch", "v1/character/update", "v1/character/export-characters/**").hasAuthority(Role.ROLE_ADMIN.getRole()) // 캐릭터 정보 업로드 및 추출
+                                .requestMatchers("v1/character/uploadAndFetch", "v1/character/update", "v1/character/export-characters/**").hasAnyAuthority(
+                                        Role.ROLE_ADMIN.getRole(), Role.ROLE_HEAD_PERSONNEL.getRole(), Role.ROLE_PERSONNEL.getRole(), Role.ROLE_PRESIDENT.getRole(), Role.ROLE_VICE_PRESIDENT.getRole()) // 캐릭터 정보 업로드 및 추출
                                 .requestMatchers("v1/character/search").permitAll() // 캐릭터 정보 검색
 
                                 .anyRequest().authenticated()
