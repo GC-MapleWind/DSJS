@@ -32,10 +32,8 @@ public class Character {
     @Column(name = "character_level", nullable = false)
     Integer level;
 
-    @Column(nullable = false)
     Integer unionLevel;
 
-    @Column(nullable = false)
     Integer unionArtifactLevel;
 
     @Column(nullable = false)

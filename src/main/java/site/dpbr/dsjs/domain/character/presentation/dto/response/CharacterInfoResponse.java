@@ -1,7 +1,5 @@
 package site.dpbr.dsjs.domain.character.presentation.dto.response;
 
-import java.util.Optional;
-
 public record CharacterInfoResponse(
         String gender,
         String world,
@@ -13,7 +11,6 @@ public record CharacterInfoResponse(
         Integer muLungFloor,
         String characterImage
 ) {
-    private static final int INVALID_INT_VALUE = -1;
 
     public static CharacterInfoResponse of(CharacterBasicInfoResponse basicInfo, CharacterUnionInfoResponse unionInfo,
                                            CharacterMuLungInfoResponse muLungInfo, Long maxCombatPower) {
@@ -22,8 +19,8 @@ public record CharacterInfoResponse(
                 basicInfo.worldName(),
                 basicInfo.characterClass(),
                 basicInfo.characterLevel(),
-                Optional.ofNullable(unionInfo.unionLevel()).orElse(INVALID_INT_VALUE),
-                Optional.ofNullable(unionInfo.unionArtifactLevel()).orElse(INVALID_INT_VALUE),
+                unionInfo.unionLevel(),
+                unionInfo.unionArtifactLevel(),
                 maxCombatPower,
                 muLungInfo.dojangBestFloor(),
                 basicInfo.characterImage());
