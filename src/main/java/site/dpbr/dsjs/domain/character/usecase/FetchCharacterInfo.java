@@ -70,7 +70,7 @@ public class FetchCharacterInfo {
     private long calculateMaxCombatPower(String ocid, String date) throws IOException {
         long maxCombatPower = -1L;
 
-        for (int i = 0; i < 7; i++) {
+        for (int i = 0; i < 31; i++) {
             maxCombatPower = Math.max(maxCombatPower,
                     fetchCharacterData("/character/stat?ocid=" + ocid + "&date=" + minusDate(date, i), CharacterStatInfoResponse.class).finalStats().stream()
                             .filter(stat -> stat.statName().equals("전투력"))
