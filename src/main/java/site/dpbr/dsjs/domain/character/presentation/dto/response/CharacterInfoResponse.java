@@ -14,10 +14,9 @@ public record CharacterInfoResponse(
         String characterImage
 ) {
     private static final int INVALID_INT_VALUE = -1;
-    private static final long INVALID_LONG_VALUE = -1L;
 
     public static CharacterInfoResponse of(CharacterBasicInfoResponse basicInfo, CharacterUnionInfoResponse unionInfo,
-                                           CharacterStatInfoResponse statInfo, CharacterMuLungInfoResponse muLungInfo) {
+                                           CharacterMuLungInfoResponse muLungInfo, Long maxCombatPower) {
         return new CharacterInfoResponse(
                 basicInfo.characterGender(),
                 basicInfo.worldName(),
@@ -25,11 +24,7 @@ public record CharacterInfoResponse(
                 basicInfo.characterLevel(),
                 Optional.ofNullable(unionInfo.unionLevel()).orElse(INVALID_INT_VALUE),
                 Optional.ofNullable(unionInfo.unionArtifactLevel()).orElse(INVALID_INT_VALUE),
-                statInfo.finalStats().stream()
-                        .filter(stat -> stat.statName().equals("전투력"))
-                        .map(stat -> Long.parseLong(stat.statValue()))
-                        .findFirst()
-                        .orElse(INVALID_LONG_VALUE),
+                maxCombatPower,
                 muLungInfo.dojangBestFloor(),
                 basicInfo.characterImage());
     }
