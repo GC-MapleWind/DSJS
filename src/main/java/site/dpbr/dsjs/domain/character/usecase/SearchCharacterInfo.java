@@ -30,7 +30,7 @@ public class SearchCharacterInfo {
 		double unionRanking =
 			(characterRepository.findAllByOrderByUnionLevelDesc().indexOf(character) + 1) * 100.0 / charactersCount;
 
-		double combatPowerRanking = characters.indexOf(character) * 100.0 / charactersCount;
+		double combatPowerRanking = (characters.indexOf(character) + 1) * 100.0 / charactersCount;
 
 		return SearchCharacterInfoResponse.of(character, charactersCount, sameWorldCount, sameJobCount, levelRanking,
 			unionRanking, combatPowerRanking);
