@@ -1,6 +1,10 @@
 package site.dpbr.dsjs.global.config;
 
-import lombok.RequiredArgsConstructor;
+import static org.springframework.http.HttpStatus.*;
+
+import java.util.Arrays;
+import java.util.List;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -16,15 +20,12 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import lombok.RequiredArgsConstructor;
 import site.dpbr.dsjs.domain.shared.Role;
 import site.dpbr.dsjs.global.filter.ExceptionHandleFilter;
 import site.dpbr.dsjs.global.jwt.JwtProvider;
 import site.dpbr.dsjs.global.jwt.TokenAuthenticationFilter;
-
-import java.util.Arrays;
-import java.util.List;
-
-import static org.springframework.http.HttpStatus.FORBIDDEN;
 
 @Configuration
 @EnableWebSecurity
@@ -58,7 +59,7 @@ public class SecurityConfig {
                                 .requestMatchers("v1/admin/test-register", "v1/admin/register","v1/admin/login").permitAll() //관리자 로그인
                                 .requestMatchers("v1/admin/refresh").permitAll() // 토큰 재발급
 
-                                .requestMatchers("v1/character/uploadAndFetch", "v1/character/update", "v1/character/export-characters/**").hasAnyAuthority(
+                                .requestMatchers("v1/character/uploadAndFetch", "v1/character/update", "v1/character/export-characters/**", "v1/character/find-all").hasAnyAuthority(
                                         Role.ROLE_ADMIN.getRole(), Role.ROLE_HEAD_PERSONNEL.getRole(), Role.ROLE_PERSONNEL.getRole(), Role.ROLE_PRESIDENT.getRole(), Role.ROLE_VICE_PRESIDENT.getRole()) // 캐릭터 정보 업로드 및 추출
                                 .requestMatchers("v1/character/search").permitAll() // 캐릭터 정보 검색
 
