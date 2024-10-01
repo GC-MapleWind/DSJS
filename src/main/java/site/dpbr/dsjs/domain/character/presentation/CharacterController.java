@@ -21,12 +21,14 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
+import site.dpbr.dsjs.domain.character.presentation.dto.request.CharacterFetchRequest;
 import site.dpbr.dsjs.domain.character.presentation.dto.response.SearchCharacterInfoResponse;
 import site.dpbr.dsjs.domain.character.usecase.ExportCharacterImages;
 import site.dpbr.dsjs.domain.character.usecase.ExportCharacterListToExcel;
 import site.dpbr.dsjs.domain.character.usecase.FindAllCharactersInfo;
 import site.dpbr.dsjs.domain.character.usecase.SearchCharacterInfo;
 import site.dpbr.dsjs.domain.character.usecase.UpdateAllCharacterInfo;
+import site.dpbr.dsjs.domain.character.usecase.UploadAndFetchAllCharacterInfo;
 import site.dpbr.dsjs.domain.character.usecase.UploadAndFetchInfo;
 import site.dpbr.dsjs.global.error.ErrorResponse;
 
@@ -36,13 +38,15 @@ import site.dpbr.dsjs.global.error.ErrorResponse;
 public class CharacterController {
 
 	private final UploadAndFetchInfo uploadAndFetchInfo;
+	private final UploadAndFetchAllCharacterInfo uploadAndFetchAllCharacterInfo;
 	private final ExportCharacterListToExcel exportCharacterListToExcel;
 	private final ExportCharacterImages exportCharacterImages;
 	private final FindAllCharactersInfo findAllCharactersInfo;
 	private final SearchCharacterInfo searchCharacterInfo;
 	private final UpdateAllCharacterInfo updateAllCharacterInfo;
 
-	@Operation(summary = "캐릭터 목록 엑셀 파일 업로드 및 전체 정보 로드", description = "캐릭터 목록 엑셀 파일을 DB에 저장하고, Nexon Open API를 통해 필요한 모든 정보를 호출합니다.")
+
+	@Operation(summary = "캐릭터 정보 API 불러오기", description = "케릭터의 정보를, Nexon Open API를 통해 필요한 모든 정보를 호출하고 DB에 저장합니다.")
 	@ApiResponses({
 		@ApiResponse(responseCode = "201"),
 		@ApiResponse(responseCode = "400", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
@@ -51,9 +55,22 @@ public class CharacterController {
 		@ApiResponse(responseCode = "500", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
 	})
 	@PostMapping(value = "/uploadAndFetch", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-	public ResponseEntity<String> uploadFile(@RequestParam("date") String date,
+	public ResponseEntity<String> uploadAndFetchInfo(CharacterFetchRequest characterFetchRequest) throws IOException {
+		return ResponseEntity.ok(uploadAndFetchInfo.execute(characterFetchRequest.date(), characterFetchRequest.characterName()));
+	}
+
+	@Operation(summary = "캐릭터 목록 엑셀 파일 업로드 및 전체 정보 로드", description = "캐릭터 목록 엑셀 파일을 DB에 저장하고, Nexon Open API를 통해 필요한 모든 정보를 호출합니다.")
+	@ApiResponses({
+		@ApiResponse(responseCode = "201", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+		@ApiResponse(responseCode = "400", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+		@ApiResponse(responseCode = "403", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+		@ApiResponse(responseCode = "404", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+		@ApiResponse(responseCode = "500", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+	})
+	@PostMapping(value = "/uploadAndFetchAllCharacter", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	public ResponseEntity<String> uploadAndFetchAllCharacterInfo(@RequestParam("date") String date,
 		@RequestPart("file") MultipartFile file) throws IOException {
-		return ResponseEntity.ok(uploadAndFetchInfo.execute(date, file));
+		return ResponseEntity.ok(uploadAndFetchAllCharacterInfo.execute(date, file));
 	}
 
 	@Operation(summary = "캐릭터 정보 엑셀파일 추출", description = "DB에 저장된 캐릭터 목록을 엑셀 파일로 추출합니다.")
