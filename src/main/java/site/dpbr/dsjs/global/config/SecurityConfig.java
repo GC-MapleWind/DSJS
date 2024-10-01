@@ -31,70 +31,79 @@ import site.dpbr.dsjs.global.jwt.TokenAuthenticationFilter;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-    private final JwtProvider tokenProvider;
+	private final JwtProvider tokenProvider;
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+	@Bean
+	public PasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
+	}
 
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http
-                .httpBasic(AbstractHttpConfigurer::disable)
-                .cors((cors) -> cors
-                        .configurationSource(corsConfigurationSource())
-                )
-                .csrf(AbstractHttpConfigurer::disable)
-                .formLogin(AbstractHttpConfigurer::disable)
-                .sessionManagement((sessionManagement) ->
-                        sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                );
+	@Bean
+	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+		http
+			.httpBasic(AbstractHttpConfigurer::disable)
+			.cors((cors) -> cors
+				.configurationSource(corsConfigurationSource())
+			)
+			.csrf(AbstractHttpConfigurer::disable)
+			.formLogin(AbstractHttpConfigurer::disable)
+			.sessionManagement((sessionManagement) ->
+				sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+			);
 
-        http
-                .authorizeHttpRequests((authorize) ->
-                        authorize
-                                .requestMatchers("/v3/api-docs/**", "/swagger-ui/**").permitAll() // API 명세서
+		http
+			.authorizeHttpRequests((authorize) ->
+				authorize
+					.requestMatchers("/v3/api-docs/**", "/swagger-ui/**")
+					.permitAll() // API 명세서
 
-                                .requestMatchers("v1/admin/test-register", "v1/admin/register","v1/admin/login").permitAll() //관리자 로그인
-                                .requestMatchers("v1/admin/refresh").permitAll() // 토큰 재발급
+					.requestMatchers("v1/admin/test-register", "v1/admin/register", "v1/admin/login")
+					.permitAll() //관리자 로그인
+					.requestMatchers("v1/admin/refresh")
+					.permitAll() // 토큰 재발급
 
-                                .requestMatchers("v1/character/uploadAndFetch", "v1/character/update", "v1/character/export-characters/**", "v1/character/find-all").hasAnyAuthority(
-                                        Role.ROLE_ADMIN.getRole(), Role.ROLE_HEAD_PERSONNEL.getRole(), Role.ROLE_PERSONNEL.getRole(), Role.ROLE_PRESIDENT.getRole(), Role.ROLE_VICE_PRESIDENT.getRole()) // 캐릭터 정보 업로드 및 추출
-                                .requestMatchers("v1/character/search").permitAll() // 캐릭터 정보 검색
+					.requestMatchers("v1/character/uploadAndFetch", "v1/character/update",
+						"v1/character/export-characters/**", "v1/character/find-all",
+						"v1/character/uploadAndFetchAllCharacter")
+					.hasAnyAuthority(
+						Role.ROLE_ADMIN.getRole(), Role.ROLE_HEAD_PERSONNEL.getRole(), Role.ROLE_PERSONNEL.getRole(),
+						Role.ROLE_PRESIDENT.getRole(), Role.ROLE_VICE_PRESIDENT.getRole()) // 캐릭터 정보 업로드 및 추출
+					.requestMatchers("v1/character/search")
+					.permitAll() // 캐릭터 정보 검색
 
-                                .anyRequest().authenticated()
-                );
+					.anyRequest()
+					.authenticated()
+			);
 
-        http
-                .exceptionHandling(exceptionHandlingCustomizer ->
-                        exceptionHandlingCustomizer
-                                .authenticationEntryPoint(new HttpStatusEntryPoint(FORBIDDEN))
-                                .accessDeniedHandler(new AccessDeniedHandlerImpl())
-                );
+		http
+			.exceptionHandling(exceptionHandlingCustomizer ->
+				exceptionHandlingCustomizer
+					.authenticationEntryPoint(new HttpStatusEntryPoint(FORBIDDEN))
+					.accessDeniedHandler(new AccessDeniedHandlerImpl())
+			);
 
-        http
-                .addFilterBefore(new TokenAuthenticationFilter(tokenProvider),
-                        UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(new ExceptionHandleFilter(),
-                        TokenAuthenticationFilter.class);
+		http
+			.addFilterBefore(new TokenAuthenticationFilter(tokenProvider),
+				UsernamePasswordAuthenticationFilter.class)
+			.addFilterBefore(new ExceptionHandleFilter(),
+				TokenAuthenticationFilter.class);
 
-        return http.build();
-    }
+		return http.build();
+	}
 
-    @Bean
-    CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList(
-                "http://localhost:8080",
-                "http://maplewind.kro.kr/",
-                "http://www.maplewind.kro.kr/"));
-        configuration.setAllowedMethods(Arrays.asList("HEAD", "GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
-        configuration.setAllowCredentials(true);
-        configuration.setAllowedHeaders(List.of("*"));
+	@Bean
+	CorsConfigurationSource corsConfigurationSource() {
+		CorsConfiguration configuration = new CorsConfiguration();
+		configuration.setAllowedOrigins(Arrays.asList(
+			"http://localhost:8080",
+			"http://maplewind.kro.kr/",
+			"http://www.maplewind.kro.kr/"));
+		configuration.setAllowedMethods(Arrays.asList("HEAD", "GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
+		configuration.setAllowCredentials(true);
+		configuration.setAllowedHeaders(List.of("*"));
 
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
-    }
+		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+		source.registerCorsConfiguration("/**", configuration);
+		return source;
+	}
 }
